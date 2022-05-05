@@ -1,4 +1,4 @@
-const { Schema, Model, Types } = require("mongoose");
+const { Schema, Types, model } = require("mongoose");
 
 const user = new Schema(
   {
@@ -27,6 +27,7 @@ const user = new Schema(
     },
     avatar: {
       type: String,
+      default: "",
     },
     gender: {
       type: String,
@@ -55,7 +56,7 @@ const user = new Schema(
   { timestamps: true }
 );
 
-const User = Model("User", user);
+const User = model("User", user);
 
 module.exports = {
   User,
