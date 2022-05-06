@@ -10,9 +10,10 @@ app.use(express.json());
 app.use(cors());
 
 // routes
+app.get("/", (req, res) => res.send("ping"));
 app.use("/api", require("./routes"));
 
 connectDB();
-app.listen(5000, () => {
+app.listen(process.env.PORT || 5000, () => {
   console.log("server is running");
 });
