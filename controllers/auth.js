@@ -39,24 +39,22 @@ const loginController = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     res.status(400).json({
-      message: "Bad request",
+      message: "Invalid credentials",
     });
     return;
   }
 
-  const { _doc: existingUser } = await User.findOne({ email });
+  const data = await User.findOne({ email });
 
-  if (!existingUser) {
-    res.status(404).send({
+  if (!data) {
+    res.status(400).send({
       message: "User does not exists",
     });
     return;
   }
 
-  const isPassCorrect = await bcrypt.compareSync(
-    password,
-    existingUser.password
-  );
+  const existingUser = data._doc;
+  const isPassCorrect = bcrypt.compareSync(password, existingUser.password);
   if (isPassCorrect) {
     delete existingUser.password;
     const token = jwt.sign({ email }, process.env.JWT_SECRET, {
@@ -64,6 +62,10 @@ const loginController = async (req, res) => {
     });
     res.status(201).send({
       user: { ...existingUser, token },
+    });
+  } else {
+    res.status(400).json({
+      message: "Invalid crendentials",
     });
   }
 };
