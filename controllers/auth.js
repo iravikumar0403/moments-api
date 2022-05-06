@@ -54,13 +54,13 @@ const loginController = async (req, res) => {
   }
 
   const existingUser = data._doc;
-  const isPassCorrect = bcrypt.compareSync(password, existingUser.password);
-  if (isPassCorrect) {
+  const isPwdCorrect = bcrypt.compareSync(password, existingUser.password);
+  if (isPwdCorrect) {
     delete existingUser.password;
     const token = jwt.sign({ email }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
-    res.status(201).send({
+    res.status(200).send({
       user: { ...existingUser, token },
     });
   } else {
