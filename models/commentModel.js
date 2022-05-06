@@ -1,4 +1,4 @@
-const { Schema, Types } = require("mongoose");
+const { Schema, Types, model } = require("mongoose");
 
 const comment = Schema(
   {
@@ -21,5 +21,5 @@ const comment = Schema(
   { timestamps: true }
 );
 
-const Comment = Model("Comment", comment);
+const Comment = model("Comment", comment);
 module.exports = { Comment };
