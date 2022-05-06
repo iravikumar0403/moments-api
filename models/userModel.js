@@ -14,6 +14,14 @@ const user = new Schema(
       trim: true,
       maxlength: 35,
     },
+    username: {
+      type: String,
+      required: true,
+      trim: true,
+      unique: true,
+      maxlength: 25,
+      lowercase: true,
+    },
     email: {
       type: String,
       required: true,
