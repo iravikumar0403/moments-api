@@ -21,9 +21,13 @@ const registerController = async (req, res) => {
   try {
     const { _doc: savedUser } = await newUser.save();
     delete savedUser.password;
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      { user_id: existingUser._id, email },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
     res.status(201).send({
       user: { ...savedUser, token },
     });
@@ -57,9 +61,13 @@ const loginController = async (req, res) => {
   const isPwdCorrect = bcrypt.compareSync(password, existingUser.password);
   if (isPwdCorrect) {
     delete existingUser.password;
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      { user_id: existingUser._id, email },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
     res.status(200).send({
       user: { ...existingUser, token },
     });

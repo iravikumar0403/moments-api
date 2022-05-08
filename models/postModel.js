@@ -1,4 +1,4 @@
-const { Schema, Types, model } = require("mongoose");
+const { Schema, model } = require("mongoose");
 
 const post = Schema(
   {
@@ -10,19 +10,20 @@ const post = Schema(
     ],
     likes: [
       {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "User",
       },
     ],
     comments: [
       {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Comment",
       },
     ],
     author: {
-      type: Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
   },
   { timestamps: true }
