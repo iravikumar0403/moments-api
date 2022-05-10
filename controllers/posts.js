@@ -96,7 +96,6 @@ const likePost = async (req, res) => {
     path: "author",
     select: ["avatar", "firstname", "lastname", "_id"],
   });
-  console.log(updatedPost);
   res.send(data);
 };
 
