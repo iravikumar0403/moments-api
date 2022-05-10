@@ -20,6 +20,10 @@ const post = Schema(
         ref: "Comment",
       },
     ],
+    isEdited: {
+      type: Boolean,
+      default: false,
+    },
     author: {
       type: Schema.Types.ObjectId,
       ref: "User",

@@ -29,7 +29,8 @@ const registerController = async (req, res) => {
       }
     );
     res.status(201).send({
-      user: { ...savedUser, token },
+      ...savedUser,
+      token,
     });
   } catch (error) {
     console.log(error);
@@ -69,7 +70,8 @@ const loginController = async (req, res) => {
       }
     );
     res.status(200).send({
-      user: { ...existingUser, token },
+      ...existingUser,
+      token,
     });
   } else {
     res.status(400).json({

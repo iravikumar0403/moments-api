@@ -38,4 +38,34 @@ const addPosts = async (req, res) => {
   res.status(201).json(data);
 };
 
-module.exports = { getAllPosts, addPosts, getFollowingPost };
+const editPosts = async (req, res) => {
+  const { post_id } = req.params;
+  const updatedPost = await Post.findByIdAndUpdate(
+    post_id,
+    { content: req.body.content, isEdited: true },
+    { returnOriginal: false }
+  );
+  const data = await Post.populate(updatedPost, {
+    path: "author",
+    select: ["avatar", "firstname", "lastname", "_id"],
+  });
+  res.status(200).json(updatedPost);
+};
+
+const deletePosts = async (req, res) => {
+  const { post_id } = req.params;
+  const { user_id } = req.body;
+  await Post.findOneAndDelete({
+    _id: post_id,
+    author: user_id,
+  });
+  res.status(204).send();
+};
+
+module.exports = {
+  getAllPosts,
+  addPosts,
+  getFollowingPost,
+  editPosts,
+  deletePosts,
+};
