@@ -1,4 +1,5 @@
 const { Post } = require("../models/postModel");
+const { User } = require("../models/userModel");
 const path = require("path");
 
 const getAllPosts = async (req, res) => {
@@ -99,6 +100,50 @@ const likePost = async (req, res) => {
   res.send(data);
 };
 
+const savePost = async (req, res) => {
+  const { post_id } = req.params;
+  const { user_id } = req.body;
+  const user = await User.findById(user_id);
+  let updatedUser;
+  if (user.saved.includes(post_id)) {
+    updatedUser = await User.findByIdAndUpdate(
+      {
+        _id: user_id,
+      },
+      {
+        $pullAll: { saved: [post_id] },
+      },
+      {
+        returnOriginal: false,
+      }
+    );
+  } else {
+    updatedUser = await User.findByIdAndUpdate(
+      {
+        _id: user_id,
+      },
+      {
+        $addToSet: { saved: [post_id] },
+      },
+      {
+        returnOriginal: false,
+      }
+    );
+  }
+  res.status(200).send(updatedUser);
+};
+
+const getBookmarks = async (req, res) => {
+  const { user_id } = req.body;
+  const user = await User.findById(user_id).populate({
+    path: "saved",
+    populate: {
+      path: "author",
+    },
+  });
+  res.status(200).json(user.saved);
+};
+
 module.exports = {
   getAllPosts,
   addPosts,
@@ -106,4 +151,6 @@ module.exports = {
   editPosts,
   deletePosts,
   likePost,
+  savePost,
+  getBookmarks,
 };
