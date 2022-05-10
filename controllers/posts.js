@@ -62,10 +62,49 @@ const deletePosts = async (req, res) => {
   res.status(204).send();
 };
 
+const likePost = async (req, res) => {
+  const { post_id } = req.params;
+  const { user_id } = req.body;
+  const post = await Post.findById(post_id);
+  let updatedPost;
+  if (post.likes.includes(user_id)) {
+    updatedPost = await Post.findByIdAndUpdate(
+      {
+        _id: post_id,
+      },
+      {
+        $pullAll: { likes: [user_id] },
+      },
+      {
+        returnOriginal: false,
+      }
+    );
+  } else {
+    updatedPost = await Post.findByIdAndUpdate(
+      {
+        _id: post_id,
+      },
+      {
+        $addToSet: { likes: [user_id] },
+      },
+      {
+        returnOriginal: false,
+      }
+    );
+  }
+  const data = await Post.populate(updatedPost, {
+    path: "author",
+    select: ["avatar", "firstname", "lastname", "_id"],
+  });
+  console.log(updatedPost);
+  res.send(data);
+};
+
 module.exports = {
   getAllPosts,
   addPosts,
   getFollowingPost,
   editPosts,
   deletePosts,
+  likePost,
 };
