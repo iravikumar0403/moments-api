@@ -19,7 +19,10 @@ const addComment = async (req, res) => {
       returnOriginal: false,
     }
   );
-  await Post.populate(post, ["comments", "author"]);
+  await Post.populate(post, [
+    { path: "comments", populate: "author" },
+    "author",
+  ]);
   res.status(201).send(post);
 };
 
@@ -53,7 +56,10 @@ const likeComment = async (req, res) => {
     );
   }
   const post = await Post.findById(updatedComment.post);
-  await Post.populate(post, ["comments", "author"]);
+  await Post.populate(post, [
+    { path: "comments", populate: "author" },
+    "author",
+  ]);
   res.status(201).send(post);
 };
 
