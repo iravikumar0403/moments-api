@@ -17,6 +17,14 @@ const comment = Schema(
         ref: "User",
       },
     ],
+    replies: {
+      type: Types.ObjectId,
+      ref: "Comment",
+    },
+    isReply: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

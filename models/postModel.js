@@ -8,18 +8,24 @@ const post = Schema(
         type: String,
       },
     ],
-    likes: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    comments: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Comment",
-      },
-    ],
+    likes: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        },
+      ],
+      default: [],
+    },
+    comments: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Comment",
+        },
+      ],
+      default: [],
+    },
     isEdited: {
       type: Boolean,
       default: false,

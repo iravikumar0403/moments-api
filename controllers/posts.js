@@ -4,11 +4,8 @@ const path = require("path");
 
 const getAllPosts = async (req, res) => {
   const allPosts = await Post.find({})
-    .sort("-updatedAt")
-    .populate({
-      path: "author",
-      select: ["avatar", "firstname", "lastname", "_id"],
-    });
+    .sort("-createdAt")
+    .populate(["author", "comments"]);
   res.send(allPosts);
 };
 
@@ -24,6 +21,12 @@ const getFollowingPost = async (req, res) => {
   res.send(post);
 };
 
+const getPostById = async (req, res) => {
+  const { post_id } = req.params;
+  const post = await Post.findById(post_id).populate(["author", "comments"]);
+  res.status(200).send(post);
+};
+
 const addPosts = async (req, res) => {
   const newPost = new Post({
     ...req.body,
@@ -31,10 +34,7 @@ const addPosts = async (req, res) => {
   });
 
   const createdPost = await newPost.save();
-  const data = await Post.populate(createdPost, {
-    path: "author",
-    select: ["avatar", "firstname", "lastname", "_id"],
-  });
+  const data = await Post.populate(createdPost, ["author", "comment"]);
 
   res.status(201).json(data);
 };
@@ -46,10 +46,15 @@ const editPosts = async (req, res) => {
     { content: req.body.content, isEdited: true },
     { returnOriginal: false }
   );
-  const data = await Post.populate(updatedPost, {
-    path: "author",
-    select: ["avatar", "firstname", "lastname", "_id"],
-  });
+  const data = await Post.populate(updatedPost, [
+    { path: "author" },
+    {
+      path: "comment",
+      populate: {
+        path: "author",
+      },
+    },
+  ]);
   res.status(200).json(updatedPost);
 };
 
@@ -93,10 +98,15 @@ const likePost = async (req, res) => {
       }
     );
   }
-  const data = await Post.populate(updatedPost, {
-    path: "author",
-    select: ["avatar", "firstname", "lastname", "_id"],
-  });
+  const data = await Post.populate(updatedPost, [
+    { path: "author" },
+    {
+      path: "comments",
+      populate: {
+        path: "author",
+      },
+    },
+  ]);
   res.send(data);
 };
 
@@ -130,7 +140,13 @@ const savePost = async (req, res) => {
       }
     );
   }
-  res.status(200).send(updatedUser);
+  await User.populate(updatedUser, {
+    path: "saved",
+    populate: {
+      path: "author",
+    },
+  });
+  res.status(200).send(updatedUser.saved);
 };
 
 const getBookmarks = async (req, res) => {
@@ -147,6 +163,7 @@ const getBookmarks = async (req, res) => {
 module.exports = {
   getAllPosts,
   addPosts,
+  getPostById,
   getFollowingPost,
   editPosts,
   deletePosts,
