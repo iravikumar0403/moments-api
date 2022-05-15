@@ -5,7 +5,15 @@ const path = require("path");
 const getAllPosts = async (req, res) => {
   const allPosts = await Post.find({})
     .sort("-createdAt")
-    .populate(["author", "comments"]);
+    .populate([
+      "author",
+      {
+        path: "comments",
+        populate: {
+          path: "author",
+        },
+      },
+    ]);
   res.send(allPosts);
 };
 
@@ -23,7 +31,15 @@ const getFollowingPost = async (req, res) => {
 
 const getPostById = async (req, res) => {
   const { post_id } = req.params;
-  const post = await Post.findById(post_id).populate(["author", "comments"]);
+  const post = await Post.findById(post_id).populate([
+    "author",
+    {
+      path: "comments",
+      populate: {
+        path: "author",
+      },
+    },
+  ]);
   res.status(200).send(post);
 };
 
@@ -34,7 +50,15 @@ const addPosts = async (req, res) => {
   });
 
   const createdPost = await newPost.save();
-  const data = await Post.populate(createdPost, ["author", "comment"]);
+  const data = await Post.populate(createdPost, [
+    "author",
+    {
+      path: "comments",
+      populate: {
+        path: "author",
+      },
+    },
+  ]);
 
   res.status(201).json(data);
 };
@@ -49,7 +73,7 @@ const editPosts = async (req, res) => {
   const data = await Post.populate(updatedPost, [
     { path: "author" },
     {
-      path: "comment",
+      path: "comments",
       populate: {
         path: "author",
       },
