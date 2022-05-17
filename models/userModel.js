@@ -37,6 +37,15 @@ const user = new Schema(
       type: String,
       default: "",
     },
+    cover: {
+      type: String,
+      default: "https://picsum.photos/800/400",
+    },
+    bio: {
+      type: String,
+      trim: true,
+      default: "Hey there!",
+    },
     gender: {
       type: String,
       trim: true,
