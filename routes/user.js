@@ -2,14 +2,20 @@ const express = require("express");
 const {
   getUserById,
   getPostByUserId,
-  getFollowers,
+  followUser,
+  unfollowUser,
+  searchUser,
+  getSuggestions,
 } = require("../controllers/user");
 const { verifyAuth } = require("../middleware/auth");
 
 const router = express.Router();
 
+router.get("/suggestions", verifyAuth, getSuggestions);
+router.get("/search/:query", verifyAuth, searchUser);
 router.get("/:username", verifyAuth, getUserById);
 router.get("/posts/:user_id", verifyAuth, getPostByUserId);
-router.get("/followers/:user_id", verifyAuth, getFollowers);
+router.post("/follow", verifyAuth, followUser);
+router.post("/unfollow", verifyAuth, unfollowUser);
 
 module.exports = router;
