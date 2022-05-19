@@ -49,7 +49,10 @@ const loginController = async (req, res) => {
     return;
   }
 
-  const data = await User.findOne({ email });
+  const data = await User.findOne({ email }).populate([
+    "followers",
+    "following",
+  ]);
 
   if (!data) {
     res.status(400).send({
