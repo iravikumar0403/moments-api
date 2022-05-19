@@ -121,7 +121,7 @@ const updateProfile = async (req, res) => {
       user_id,
       { ...req.body },
       { returnOriginal: false }
-    );
+    ).populate(["followers", "following"]);
     res.status(200).json(user);
   } catch (error) {
     console.log(error);
