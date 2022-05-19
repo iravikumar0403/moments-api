@@ -6,6 +6,7 @@ const {
   unfollowUser,
   searchUser,
   getSuggestions,
+  updateProfile,
 } = require("../controllers/user");
 const { verifyAuth } = require("../middleware/auth");
 
@@ -15,6 +16,7 @@ router.get("/suggestions", verifyAuth, getSuggestions);
 router.get("/search/:query", verifyAuth, searchUser);
 router.get("/:username", verifyAuth, getUserById);
 router.get("/posts/:user_id", verifyAuth, getPostByUserId);
+router.post("/update", verifyAuth, updateProfile);
 router.post("/follow", verifyAuth, followUser);
 router.post("/unfollow", verifyAuth, unfollowUser);
 

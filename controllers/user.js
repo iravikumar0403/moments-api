@@ -114,6 +114,21 @@ const getSuggestions = async (req, res) => {
   res.status(200).json(suggestions);
 };
 
+const updateProfile = async (req, res) => {
+  const { user_id } = req.body;
+  try {
+    const user = await User.findByIdAndUpdate(
+      user_id,
+      { ...req.body },
+      { returnOriginal: false }
+    );
+    res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send();
+  }
+};
+
 module.exports = {
   getUserById,
   getPostByUserId,
@@ -121,4 +136,5 @@ module.exports = {
   unfollowUser,
   searchUser,
   getSuggestions,
+  updateProfile,
 };

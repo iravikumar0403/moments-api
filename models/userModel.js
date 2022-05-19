@@ -46,6 +46,11 @@ const user = new Schema(
       trim: true,
       default: "Hey there!",
     },
+    website: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     gender: {
       type: String,
       trim: true,
