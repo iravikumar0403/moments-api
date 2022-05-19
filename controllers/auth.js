@@ -22,7 +22,7 @@ const registerController = async (req, res) => {
     const { _doc: savedUser } = await newUser.save();
     delete savedUser.password;
     const token = jwt.sign(
-      { user_id: existingUser._id, email },
+      { user_id: savedUser._id, email },
       process.env.JWT_SECRET,
       {
         expiresIn: "7d",
