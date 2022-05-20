@@ -36,7 +36,6 @@ const getFollowingPost = async (req, res) => {
       },
     ]);
 
-  console.log(post);
   res.send(post);
 };
 

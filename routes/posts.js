@@ -17,7 +17,7 @@ const router = express.Router();
 router.get("/", verifyAuth, getAllPosts);
 router.get("/bookmarks", verifyAuth, getBookmarks);
 router.get("/feed", verifyAuth, getFollowingPost);
-router.get("/:post_id", verifyAuth, getPostById);
+router.get("/:post_id", getPostById);
 router.post("/", verifyAuth, addPosts);
 router.post("/:post_id", verifyAuth, editPosts);
 router.post("/like/:post_id", verifyAuth, likePost);
