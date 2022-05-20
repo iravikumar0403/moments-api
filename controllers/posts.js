@@ -2,8 +2,14 @@ const { Post } = require("../models/postModel");
 const { User } = require("../models/userModel");
 const path = require("path");
 
+const LIMIT = 4;
+
 const getAllPosts = async (req, res) => {
-  const allPosts = await Post.find({})
+  const { page } = req.query;
+  const total_count = await Post.count();
+  const posts = await Post.find({})
+    .skip(page * LIMIT)
+    .limit(LIMIT)
     .sort("-createdAt")
     .populate([
       "author",
@@ -14,17 +20,24 @@ const getAllPosts = async (req, res) => {
         },
       },
     ]);
-  res.send(allPosts);
+  const has_more = total_count > page * LIMIT;
+  res.send({ page: Number(page), posts, has_more });
 };
 
 const getFollowingPost = async (req, res) => {
   const { user_id } = req.body;
+  const { page } = req.query;
   const user = await User.findById(user_id);
   const following = user.following;
 
-  const post = await Post.find({
+  const total_count = await Post.count({
+    author: { $in: [user_id, ...following] },
+  });
+  const posts = await Post.find({
     author: { $in: [user_id, ...following] },
   })
+    .skip(page * LIMIT)
+    .limit(LIMIT)
     .sort("-createdAt")
     .populate([
       "author",
@@ -35,8 +48,8 @@ const getFollowingPost = async (req, res) => {
         },
       },
     ]);
-
-  res.send(post);
+  const has_more = total_count > page * LIMIT;
+  res.send({ page: Number(page), posts, has_more });
 };
 
 const getPostById = async (req, res) => {
