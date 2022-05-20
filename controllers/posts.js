@@ -18,14 +18,25 @@ const getAllPosts = async (req, res) => {
 };
 
 const getFollowingPost = async (req, res) => {
-  const post = await Post.find({});
-  /**
-   * TO-DO
-   * get userid from req body
-   * find user and extract following id
-   * find post by "following" users
-   * return post
-   */
+  const { user_id } = req.body;
+  const user = await User.findById(user_id);
+  const following = user.following;
+
+  const post = await Post.find({
+    author: { $in: [user_id, ...following] },
+  })
+    .sort("-createdAt")
+    .populate([
+      "author",
+      {
+        path: "comments",
+        populate: {
+          path: "author",
+        },
+      },
+    ]);
+
+  console.log(post);
   res.send(post);
 };
 
