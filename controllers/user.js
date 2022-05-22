@@ -19,7 +19,7 @@ const getUserById = async (req, res) => {
 const getPostByUserId = async (req, res) => {
   const { user_id } = req.params;
   try {
-    const posts = await Post.find({ author: user_id });
+    const posts = await Post.find({ author: user_id }).sort("-createdAt");
     const populatedPost = await Post.populate(posts, [
       "author",
       { path: "comments", populate: "author" },
